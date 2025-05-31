@@ -1,32 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>jQuery DOM Operations</title>
+    <title>Book Collection</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
-        .myStyle {
-            background-color: coral;
-            padding: 16px;
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .book-info {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f0f8ff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
-    <div id="myElement">Original Text</div>
-    <div id="myDIV">
-        <p>I am a myDIV.</p>
-    </div>
-    <button id="myButton">Click me</button>
+
+    <h1>Book Information</h1>
+
+    <div id="book1" class="book-info"></div>
+    <div id="book2" class="book-info"></div>
+    <div id="allGenres" class="book-info"></div>
+
     <script>
-        // jQuery equivalent of a
-        $("#myElement").text("Modified Text");
-        
-        // jQuery equivalent of b
-        $("#myDIV").addClass("myStyle");
-        
-        // jQuery equivalent of c
-        $("#myButton").click(function() {
-            alert("Button clicked!");
+        $(document).ready(function () {
+            $.getJSON("Books.json", function (data) {
+                // Extract values first
+                let titleFirstBook = data.books[0].title;
+                let authorSecondBook = data.books[1].author;
+
+                let genresList = "<strong>Genres of all books:</strong><ul>";
+                $.each(data.books, function (index, book) {
+                    genresList += "<li><em>" + book.title + "</em>: " + book.genres.join(", ") + "</li>";
+                });
+                genresList += "</ul>";
+
+                // Separate DOM manipulation
+                $("#book1").html("<strong>Title of the first book:</strong> " + titleFirstBook);
+                $("#book2").html("<strong>Author of the second book:</strong> " + authorSecondBook);
+                $("#allGenres").html(genresList);
+            }).fail(function () {
+                $("#book1, #book2, #allGenres").text("Error loading JSON data.");
+            });
         });
     </script>
+
 </body>
 </html>
